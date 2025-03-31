@@ -6,8 +6,7 @@ export const login = async (email, password) => {
 };
 
 export const logout = async () => {
-  // await api.post('/logout');
-  localStorage.removeItem('token');
+  await api.post('/logout');
 };
 
 export const fetchUserInfo = async () => {

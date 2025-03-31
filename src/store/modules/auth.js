@@ -39,7 +39,7 @@ const actions = {
   },
 
   async logout({ commit }) {
-    await logout();
+    // await logout();
     commit('CLEAR_AUTH');
   },
 
