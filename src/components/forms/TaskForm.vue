@@ -116,9 +116,44 @@
         { immediate: true }
       );
   
-      const handleSubmit = () => {
-        emit('submit', { ...form.value });
+      const handleSubmit = async () => {
+        try {
+          const taskPayload = {
+            title: form.value.title,
+            description: form.value.description,
+            status: form.value.status,
+            project_id: form.value.project_id,
+          };
+
+          let taskId;
+
+          if (isEdit.value) {
+            await store.dispatch('tasks/updateTask', {
+              id: props.initialData.id,
+              data: taskPayload,
+            });
+            taskId = props.initialData.id;
+          } else {
+            await store.dispatch('tasks/createTask', taskPayload);
+            await store.dispatch('tasks/fetchTasks');
+            const allTasks = store.getters['tasks/allTasks'];
+            taskId = allTasks[allTasks.length - 1]?.id;
+          }
+
+          if (taskId && form.value.user_ids.length > 0) {
+            await store.dispatch('tasks/assignUsersToTask', {
+              id: taskId,
+              users: form.value.user_ids,
+            });
+          }
+
+          emit('submit');
+        } catch (err) {
+          console.error('[ERROR]', err);
+          alert('Error al guardar la tarea. Revisa los campos o contacta al backend.');
+        }
       };
+
   
       return {
         form,

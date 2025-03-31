@@ -1,29 +1,43 @@
-# Prueba_Tecnica_3
+# Proyecto: Gestor de Proyectos (Prueba Técnica)
 
-This template should help get you started developing with Vue 3 in Vite.
+Este proyecto es una aplicación web desarrollada con Vue 3 + Vite que permite gestionar proyectos, tareas y usuarios con roles diferenciados (RH, Planning, Developer y Tester).
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🚀 Funcionalidades principales
 
-## Customize configuration
+- Login con autenticación por token
+- Redirección según el rol del usuario
+- Gestión de usuarios (crear, editar, cambiar contraseña)
+- Gestión de proyectos (crear, editar, asignar usuarios)
+- Gestión de tareas (crear, editar, asignar usuarios, cambiar estado)
+- Navegación protegida según el rol
+- Vistas responsivas y dinámicas por rol
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## 🧪 Usuarios de prueba
 
-```sh
-yarn
-```
+Se puede iniciar sesión con cualquiera de los siguientes roles:
 
-### Compile and Hot-Reload for Development
+| Rol       | Correo                   | Contraseña       |
+|-----------|---------------------------|------------------|
+| RH        | rh1@example.com           | rh1password       |
+| Planning  | planning1@example.com     | planning1password |
+| Developer | developer1@example.com    | developer1password |
 
-```sh
-yarn dev
-```
+---
 
-### Compile and Minify for Production
+## 🛠️ Instalación
 
-```sh
-yarn build
-```
+```bash
+# Clona el proyecto
+git clone https://github.com/tu-usuario/tu-repo.git
+
+cd tu-repo
+
+# Instala dependencias
+yarn install
+
+# Ejecuta en desarrollo
+yarn run dev

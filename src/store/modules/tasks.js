@@ -1,5 +1,12 @@
-import { getAllTasks, createTask, updateTask, deleteTask, updateTaskStatus } from '@/api/tasks';
-import { TASK_STATUS } from '@/utils/constants';
+import {
+  getAllTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  updateTaskStatus,
+  assignUsersToTask,
+} from '@/api/tasks';
+import { TASK_STATUS, ROLES } from '@/utils/constants';
 import store from '@/store';
 
 const state = () => ({
@@ -25,19 +32,25 @@ const actions = {
     commit('SET_LOADING', true);
     try {
       await store.dispatch('projects/fetchProjects');
-  
+      await store.dispatch('users/fetchAssignableUsers');
+
       const { tasks } = await getAllTasks();
+
       const projectsMap = store.getters['projects/allProjects'].reduce((acc, p) => {
         acc[p.id] = p;
         return acc;
       }, {});
-  
+
       const transformedTasks = tasks.map(task => ({
         ...task,
         statusLabel: TASK_STATUS[task.status] || 'desconocido',
         project: projectsMap[task.project_id] || null,
+        users: (task.users || []).map(user => ({
+          ...user,
+          roleLabel: ROLES[user.role] || 'Desconocido',
+        })),
       }));
-  
+
       commit('SET_TASKS', transformedTasks);
     } catch (err) {
       commit('SET_ERROR', 'Error al obtener tareas');
@@ -45,7 +58,6 @@ const actions = {
       commit('SET_LOADING', false);
     }
   },
-  
 
   async createTask(_, data) {
     return await createTask(data);
@@ -53,6 +65,10 @@ const actions = {
 
   async updateTask(_, { id, data }) {
     return await updateTask(id, data);
+  },
+
+  async assignUsersToTask(_, { id, users }) {
+    return await assignUsersToTask(id, users);
   },
 
   async deleteTask(_, id) {
@@ -65,7 +81,7 @@ const actions = {
 };
 
 const getters = {
-  allTasks: state => state.tasks,
+  allTasks: (state) => state.tasks,
 };
 
 export default {

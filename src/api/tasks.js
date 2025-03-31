@@ -8,6 +8,7 @@ export const getAllTasks = async () => {
 
 export const createTask = async (taskData) => {
   const res = await api.post('/tasks/create', taskData);
+  console.log('[CREATE TASK RESPONSE]', res.data);
   return res.data;
 };
 
@@ -21,9 +22,9 @@ export const deleteTask = async (id) => {
   return res.data;
 };
 
-export const assignTasksToUser = async (userId, taskIds) => {
-  const res = await api.post(`/tasks/assign-users/${userId}`, {
-    tasks: taskIds,
+export const assignUsersToTask = async (taskId, userIds) => {
+  const res = await api.put(`/tasks/assign-users/${taskId}`, {
+    users: userIds,
   });
   return res.data;
 };

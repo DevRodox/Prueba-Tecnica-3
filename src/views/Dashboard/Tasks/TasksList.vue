@@ -53,7 +53,7 @@
               <td class="px-4 py-2">
                 <ul class="text-sm list-disc list-inside text-gray-600">
                   <li v-for="user in task.users" :key="user.id">
-                    {{ user.name }} ({{ user.role }})
+                    {{ user.name }} ({{ user.roleLabel || 'Sin rol' }})
                   </li>
                 </ul>
               </td>
