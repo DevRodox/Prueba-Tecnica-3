@@ -1,25 +1,40 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
-      <form @submit.prevent="login">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+      <h1 class="text-2xl font-bold mb-6 text-center">Iniciar sesión</h1>
+
+      <form @submit.prevent="handleLogin">
         <div class="mb-4">
-          <label class="block text-gray-700">Email</label>
-          <input v-model="email" type="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          <label class="block text-sm font-medium text-gray-700">Correo</label>
+          <input
+            v-model="email"
+            type="email"
+            class="mt-1 block w-full p-2 border rounded"
+            required
+          />
         </div>
+
         <div class="mb-6">
-          <label class="block text-gray-700">Password</label>
-          <input v-model="password" type="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+          <input
+            v-model="password"
+            type="password"
+            class="mt-1 block w-full p-2 border rounded"
+            required
+          />
         </div>
-        <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600" :disabled="isLoading">
-          <span v-if="!isLoading">Login</span>
-          <span v-else>
-            <svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          </span>
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          :disabled="loading"
+        >
+          {{ loading ? 'Entrando...' : 'Ingresar' }}
         </button>
+
+        <p v-if="error" class="text-red-600 mt-4 text-sm text-center">
+          {{ error }}
+        </p>
       </form>
     </div>
   </div>
@@ -29,34 +44,38 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import api from '../../services/api';
 
 export default {
+  name: 'Login',
   setup() {
     const store = useStore();
     const router = useRouter();
+
     const email = ref('');
     const password = ref('');
-    const isLoading = ref(false);
+    const error = ref('');
+    const loading = ref(false);
 
-    const login = async () => {
-      isLoading.value = true;
+    const handleLogin = async () => {
+      error.value = '';
+      loading.value = true;
       try {
-        const loginResponse = await api.login(email.value, password.value);
-
-        const userResponse = await api.getCurrentUser();
-        store.dispatch('login', userResponse.data);
-
-        router.push('/dashboard');
-      } catch (error) {
-        console.error('Login failed', error);
-        alert('Error al iniciar sesión. Por favor, verifica tus credenciales.');
+        await store.dispatch('auth/login', { email: email.value, password: password.value });
+        router.push('/home');
+      } catch (err) {
+        error.value = 'Correo o contraseña incorrectos';
       } finally {
-        isLoading.value = false;
+        loading.value = false;
       }
     };
 
-    return { email, password, isLoading, login };
+    return {
+      email,
+      password,
+      error,
+      loading,
+      handleLogin,
+    };
   },
 };
 </script>

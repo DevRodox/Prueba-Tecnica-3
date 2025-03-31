@@ -1,25 +1,24 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
-    <Navbar />
-    <div class="container mx-auto p-4">
-      <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
-      <p>Bienvenido, {{ currentUser.name }}</p>
+  <div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">Bienvenido, {{ user.name }}</h1>
+    <p class="mb-6">Tu rol es: <strong>{{ role }}</strong></p>
 
-      <div v-if="isPlaneacion || isDesarrollador || isTester">
-        <h2 class="text-xl font-bold mb-2">Funcionalidades</h2>
-        <router-link to="/projects" class="bg-green-500 text-white px-4 py-2 rounded">
-          Proyectos
-        </router-link>
-        <router-link to="/tasks" class="bg-green-500 text-white px-4 py-2 rounded ml-2">
-          Tareas
-        </router-link>
+    <div class="grid gap-4 md:grid-cols-2">
+
+      <div v-if="role === 'RH'" class="p-4 bg-white shadow rounded">
+        <h2 class="text-xl font-semibold mb-2">Administración de Usuarios</h2>
+        <router-link to="/users" class="text-blue-600 hover:underline">Ver usuarios</router-link>
       </div>
 
-      <div v-if="isRH">
-        <h2 class="text-xl font-bold mb-2">Funcionalidades de RH</h2>
-        <router-link to="/users" class="bg-blue-500 text-white px-4 py-2 rounded">
-          Gestionar Usuarios
-        </router-link>
+      <div v-if="role === 'Planning'" class="p-4 bg-white shadow rounded">
+        <h2 class="text-xl font-semibold mb-2">Gestión de Proyectos y Tareas</h2>
+        <router-link to="/projects" class="block text-blue-600 hover:underline">Proyectos</router-link>
+        <router-link to="/tasks" class="block text-blue-600 hover:underline">Tareas</router-link>
+      </div>
+
+      <div v-if="['Developer', 'Tester'].includes(role)" class="p-4 bg-white shadow rounded">
+        <h2 class="text-xl font-semibold mb-2">Mis tareas</h2>
+        <router-link to="/tasks" class="text-blue-600 hover:underline">Ver tareas asignadas</router-link>
       </div>
     </div>
   </div>
@@ -28,19 +27,14 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import Navbar from '../../components/shared/Navbar.vue';
 
 export default {
-  components: { Navbar },
+  name: 'Home',
   setup() {
     const store = useStore();
-    const currentUser = computed(() => store.getters.currentUser);
-    const isRH = computed(() => store.getters.isRH);
-    const isPlaneacion = computed(() => store.getters.isPlaneacion);
-    const isDesarrollador = computed(() => store.getters.isDesarrollador);
-    const isTester = computed(() => store.getters.isTester);
-
-    return { currentUser, isRH, isPlaneacion, isDesarrollador, isTester };
+    const user = computed(() => store.state.auth.user || {});
+    const role = computed(() => store.getters['auth/userRole']);
+    return { user, role };
   },
 };
 </script>
