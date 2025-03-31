@@ -135,6 +135,7 @@
             taskId = props.initialData.id;
           } else {
             await store.dispatch('tasks/createTask', taskPayload);
+
             await store.dispatch('tasks/fetchTasks');
             const allTasks = store.getters['tasks/allTasks'];
             taskId = allTasks[allTasks.length - 1]?.id;
@@ -145,14 +146,17 @@
               id: taskId,
               users: form.value.user_ids,
             });
+
+            await store.dispatch('tasks/fetchTasks');
           }
 
           emit('submit');
         } catch (err) {
-          console.error('[ERROR]', err);
-          alert('Error al guardar la tarea. Revisa los campos o contacta al backend.');
+          console.error('Error al guardar la tarea:', err);
+          alert('Error al guardar la tarea. Revisa los campos o contacta al administrador.');
         }
       };
+
 
   
       return {

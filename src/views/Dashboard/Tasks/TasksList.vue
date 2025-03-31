@@ -87,7 +87,7 @@
             {{ editingTask ? 'Editar tarea' : 'Crear nueva tarea' }}
           </h2>
   
-          <TaskForm :initialData="editingTask" @submit="handleFormSubmit" />
+          <TaskForm :initialData="editingTask" @submit="onFormSuccess" />
   
           <button
             @click="closeModal"
@@ -124,6 +124,12 @@
   
       const fetchTasks = () => store.dispatch('tasks/fetchTasks');
   
+      const onFormSuccess = () => {
+        fetchTasks();
+        closeModal();
+      };
+
+
       onMounted(() => {
         fetchTasks();
       });
@@ -193,6 +199,7 @@
         handleDelete,
         changeStatus,
         fetchTasks,
+        onFormSuccess
       };
     },
   };
